@@ -48,6 +48,7 @@ resource "aws_launch_template" "ec2" {
     }
   }
 
+  user_data = filebase64("userdata.sh")
 }
 
 resource "aws_iam_instance_profile" "ec2" {
