@@ -19,21 +19,34 @@ data "aws_ami" "amazon" {
   owners = ["137112412989"] # Canonical
 }
 
-resource "aws_instance" "web" {
-  ami                  = data.aws_ami.amazon.id
-  instance_type        = "t2.micro"
-  subnet_id            = aws_subnet.public[0].id
-  iam_instance_profile = aws_iam_instance_profile.ec2.name
+resource "aws_launch_template" "ec2" {
+  name          = "ec2"
+  image_id      = data.aws_ami.amazon.id
+  instance_type = "t2.micro"
 
   vpc_security_group_ids = [
     aws_security_group.ec2.id
   ]
 
-  tags = {
-    Name = "HelloWorld"
+  iam_instance_profile {
+    arn = aws_iam_instance_profile.ec2.arn
   }
 
-  user_data_base64 = filebase64("userdata.sh")
+  user_data = filebase64("userdata.sh")
+}
+
+resource "aws_autoscaling_group" "ec2" {
+  name             = "uni"
+  max_size         = 1
+  min_size         = 1
+  desired_capacity = 1
+
+  vpc_zone_identifier = aws_subnet.public.*.id
+
+  launch_template {
+    name    = aws_launch_template.ec2.name
+    version = "$Latest"
+  }
 }
 
 resource "aws_iam_instance_profile" "ec2" {
