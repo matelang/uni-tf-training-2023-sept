@@ -2,24 +2,6 @@ resource "aws_s3_bucket" "frontend" {
   bucket_prefix = "unitftrain"
 }
 
-resource "aws_s3_object" "index" {
-  bucket       = aws_s3_bucket.frontend.id
-  key          = "index.html"       # remote
-  content      = file("index.html") # local
-  content_type = "text/html"
-
-  acl = "public-read"
-}
-
-resource "aws_s3_object" "error" {
-  bucket       = aws_s3_bucket.frontend.id
-  key          = "error.html"       # remote
-  content      = file("error.html") # local
-  content_type = "text/html"
-
-  acl = "public-read"
-}
-
 resource "aws_s3_bucket_ownership_controls" "frontend" {
   bucket = aws_s3_bucket.frontend.id
 
@@ -57,4 +39,22 @@ resource "aws_s3_bucket_website_configuration" "frontend" {
   error_document {
     key = aws_s3_object.error.key
   }
+}
+
+resource "aws_s3_object" "index" {
+  bucket       = aws_s3_bucket.frontend.id
+  key          = "index.html"       # remote
+  content      = file("index.html") # local
+  content_type = "text/html"
+
+  acl = "public-read"
+}
+
+resource "aws_s3_object" "error" {
+  bucket       = aws_s3_bucket.frontend.id
+  key          = "error.html"       # remote
+  content      = file("error.html") # local
+  content_type = "text/html"
+
+  acl = "public-read"
 }
