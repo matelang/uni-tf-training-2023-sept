@@ -21,8 +21,8 @@ resource "aws_subnet" "public" {
   cidr_block              = cidrsubnet(aws_vpc.main.cidr_block, 8, count.index)
   availability_zone_id    = data.aws_availability_zones.available.zone_ids[count.index]
   map_public_ip_on_launch = true
-  
-  tags                    = {
+
+  tags = {
     Name = join("-", ["public", data.aws_availability_zones.available.zone_ids[count.index]])
   }
 }
