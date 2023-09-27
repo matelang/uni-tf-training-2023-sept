@@ -31,6 +31,29 @@ resource "aws_autoscaling_group" "ec2" {
   min_size = 1
 }
 
+resource "aws_security_group" "ec2" {
+  name   = "ec2"
+  vpc_id = aws_vpc.main.id
+
+  ingress {
+    from_port   = 5678
+    to_port     = 5678
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "ec2"
+  }
+}
+
 resource "aws_launch_template" "ec2" {
   name_prefix   = "HelloWorld"
   image_id      = data.aws_ami.amazon.id
@@ -39,6 +62,10 @@ resource "aws_launch_template" "ec2" {
   iam_instance_profile {
     name = aws_iam_instance_profile.ec2.name
   }
+
+  vpc_security_group_ids = [
+    aws_security_group.ec2.id
+  ]
 
   tag_specifications {
     resource_type = "instance"
