@@ -38,7 +38,7 @@ resource "aws_s3_object" "index" {
   content      = file("index.html")
   content_type = "text/html"
 
-  acl          = "public-read"
+  acl = "public-read"
 }
 
 resource "aws_s3_object" "error" {
@@ -46,9 +46,9 @@ resource "aws_s3_object" "error" {
     aws_s3_bucket_acl.example
   ]
 
-  bucket  = aws_s3_bucket.frontend.id
-  key     = "error.html"
-  content = file("error.html")
+  bucket       = aws_s3_bucket.frontend.id
+  key          = "error.html"
+  content      = file("error.html")
   content_type = "text/html"
 
   acl = "public-read"
