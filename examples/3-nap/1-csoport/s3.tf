@@ -29,9 +29,39 @@ resource "aws_s3_bucket_acl" "example" {
 }
 
 resource "aws_s3_object" "index" {
+  depends_on = [
+    aws_s3_bucket_acl.example
+  ]
+
+  bucket       = aws_s3_bucket.frontend.id
+  key          = "index.html"
+  content      = file("index.html")
+  content_type = "text/html"
+
+  acl          = "public-read"
+}
+
+resource "aws_s3_object" "error" {
+  depends_on = [
+    aws_s3_bucket_acl.example
+  ]
+
   bucket  = aws_s3_bucket.frontend.id
-  key     = "index.html"
-  content = file("index.html")
+  key     = "error.html"
+  content = file("error.html")
+  content_type = "text/html"
 
   acl = "public-read"
+}
+
+resource "aws_s3_bucket_website_configuration" "example" {
+  bucket = aws_s3_bucket.frontend.id
+
+  index_document {
+    suffix = aws_s3_object.index.key
+  }
+
+  error_document {
+    key = aws_s3_object.error.key
+  }
 }
