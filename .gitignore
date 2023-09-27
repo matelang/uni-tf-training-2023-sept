@@ -2,3 +2,4 @@
 **/terraform.tfstate*
 **/.terraform/
 **/.idea/
+**/.terraform.tfstate.lock.info

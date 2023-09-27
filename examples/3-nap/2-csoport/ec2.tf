@@ -43,6 +43,10 @@ resource "aws_autoscaling_group" "ec2" {
 
   vpc_zone_identifier = aws_subnet.public.*.id
 
+  target_group_arns = [
+    aws_lb_target_group.lb.arn,
+  ]
+
   launch_template {
     name    = aws_launch_template.ec2.name
     version = "$Latest"
@@ -83,10 +87,12 @@ resource "aws_security_group" "ec2" {
   vpc_id = aws_vpc.main.id
 
   ingress {
-    from_port   = 5678
-    to_port     = 5678
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    from_port = 5678
+    to_port   = 5678
+    protocol  = "tcp"
+    security_groups = [
+      aws_security_group.lb.id
+    ]
   }
 
   egress {
