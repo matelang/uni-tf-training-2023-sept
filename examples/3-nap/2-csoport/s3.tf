@@ -42,6 +42,10 @@ resource "aws_s3_bucket_website_configuration" "frontend" {
 }
 
 resource "aws_s3_object" "index" {
+  depends_on = [
+    aws_s3_bucket_acl.frontend
+  ]
+
   bucket       = aws_s3_bucket.frontend.id
   key          = "index.html"       # remote
   content      = file("index.html") # local
@@ -51,6 +55,10 @@ resource "aws_s3_object" "index" {
 }
 
 resource "aws_s3_object" "error" {
+  depends_on = [
+    aws_s3_bucket_acl.frontend
+  ]
+
   bucket       = aws_s3_bucket.frontend.id
   key          = "error.html"       # remote
   content      = file("error.html") # local
